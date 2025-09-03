@@ -4,6 +4,7 @@ import com.io.readingweb.util.StoryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -53,4 +54,17 @@ public class Story {
 
     @OneToMany(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Chapter> chapters;
+
+    @PrePersist
+    @PreUpdate
+    public void generateSlug() {
+        if (this.title != null) {
+            String normalized = Normalizer.normalize(this.title, Normalizer.Form.NFD);
+            String withoutDiacritics = normalized.replaceAll("\\p{M}", "");
+            this.slug = withoutDiacritics
+                    .toLowerCase()
+                    .replaceAll("[^a-z0-9\\s]", "")
+                    .replaceAll("\\s+", "-");
+        }
+    }
 }
