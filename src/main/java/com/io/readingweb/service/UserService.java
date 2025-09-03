@@ -37,7 +37,7 @@ public class UserService {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
             Set<Role> roleSet = new HashSet<>();
-            Role role = roleRepository.findByName(RoleName.USER.toString()).orElseThrow(() -> new RuntimeException("Username do not exists"));
+            Role role = roleRepository.findByRoleName(RoleName.valueOf("USER")).orElseThrow(() -> new RuntimeException("role do not exists"));
             roleSet.add(role);
 
             User user = User.builder()
@@ -64,8 +64,8 @@ public class UserService {
         User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Set<Role> roleNames = user.getRoles().stream()
-                .map(Role::getRoleName)
+        Set<String> roleNames = user.getRoles().stream()
+                .map(r -> r.getRoleName().toString())
                 .collect(Collectors.toSet());
 
         return UserInfoDTO.builder()

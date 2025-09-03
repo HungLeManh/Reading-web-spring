@@ -24,5 +24,5 @@ public class UserInfoDTO {
     private UserStatus status;
     private LocalDate createdAt;
     private LocalDate updatedAt;
-    private Set<Role> roles;
+    private Set<String> roles;
 }
